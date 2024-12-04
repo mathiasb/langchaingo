@@ -196,7 +196,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/bedrockruntime v1.8.1
 	github.com/cohere-ai/tokenizer v1.1.2
 	github.com/fatih/color v1.17.0
-	github.com/gage-technologies/mistral-go v1.0.0
+	github.com/gage-technologies/mistral-go v1.1.0
 	github.com/getzep/zep-go v1.0.4
 	github.com/go-openapi/strfmt v0.21.3
 	github.com/go-sql-driver/mysql v1.7.1
@@ -216,6 +216,7 @@ require (
 	github.com/pinecone-io/go-pinecone v0.4.1
 	github.com/pkoukk/tiktoken-go v0.1.6
 	github.com/redis/rueidis v1.0.34
+	github.com/tmc/langchaingo v0.1.12
 	github.com/weaviate/weaviate v1.24.1
 	github.com/weaviate/weaviate-go-client/v4 v4.13.1
 	gitlab.com/golang-commonmark/markdown v0.0.0-20211110145824-bf3e522c626a
