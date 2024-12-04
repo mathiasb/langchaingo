@@ -108,7 +108,7 @@ func (o *Model) CreateEmbedding(ctx context.Context, inputTexts []string) ([][]f
 	embsRes, err := o.client.Embeddings(o.clientOptions.embeddingModel, inputTexts)
 	if err != nil {
 		o.CallbacksHandler.HandleLLMError(ctx, err)
-		return nil, err
+		return nil, errors.New("failed to create embeddings: " + err.Error())
 	}
 	var allEmbds [][]float32
 	for _, embs := range embsRes.Data {
