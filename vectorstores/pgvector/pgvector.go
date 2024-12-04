@@ -334,7 +334,7 @@ LIMIT $3`, s.embeddingTableName,
 		whereQuery)
 	rows, err := s.conn.Query(ctx, sql, dims, pgvector.NewVector(embedderData), numDocuments)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("embed query %q: %v", err)
 	}
 	defer rows.Close()
 
