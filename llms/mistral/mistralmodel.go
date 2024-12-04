@@ -23,11 +23,12 @@ var _ llms.Model = (*Model)(nil)
 // Instantiates a new Mistral Model.
 func New(opts ...Option) (*Model, error) {
 	options := &clientOptions{
-		apiKey:     os.Getenv("MISTRAL_API_KEY"),
-		endpoint:   sdk.Endpoint,
-		maxRetries: sdk.DefaultMaxRetries,
-		timeout:    sdk.DefaultTimeout,
-		model:      sdk.ModelOpenMistral7b,
+		apiKey:         os.Getenv("MISTRAL_API_KEY"),
+		endpoint:       sdk.Endpoint,
+		maxRetries:     sdk.DefaultMaxRetries,
+		timeout:        sdk.DefaultTimeout,
+		model:          sdk.ModelOpenMistral7b,
+		embeddingModel: "mistral-embed",
 	}
 
 	for _, opt := range opts {
@@ -88,6 +89,36 @@ func setCallOptions(options []llms.CallOption, callOpts *llms.CallOptions) {
 	for _, opt := range options {
 		opt(callOpts)
 	}
+}
+
+func convertFloat64ToFloat32(input []float64) []float32 {
+	// Create a slice with the same length as the input.
+	output := make([]float32, len(input))
+
+	// Iterate over the input slice and convert each element.
+	for i, v := range input {
+		output[i] = float32(v)
+	}
+
+	return output
+}
+
+// CreateEmbedding implements the embeddings.EmbedderClient interface and creates embeddings for the given input texts.
+func (o *Model) CreateEmbedding(ctx context.Context, inputTexts []string) ([][]float32, error) {
+	embsRes, err := o.client.Embeddings(o.clientOptions.embeddingModel, inputTexts)
+	if err != nil {
+		o.CallbacksHandler.HandleLLMError(ctx, err)
+		return nil, err
+	}
+	var allEmbds [][]float32
+	for _, embs := range embsRes.Data {
+		if len(embs.Embedding) == 0 {
+			o.CallbacksHandler.HandleLLMError(ctx, err)
+			return nil, errors.New("empty embeddings")
+		}
+		allEmbds = append(allEmbds, convertFloat64ToFloat32(embs.Embedding))
+	}
+	return allEmbds, nil
 }
 
 func resolveDefaultOptions(sdkDefaults sdk.ChatRequestParams, c *clientOptions) *llms.CallOptions {

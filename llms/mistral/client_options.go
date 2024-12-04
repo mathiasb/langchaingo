@@ -12,6 +12,7 @@ type clientOptions struct {
 	maxRetries       int
 	timeout          time.Duration
 	model            string
+	embeddingModel   string
 	callbacksHandler callbacks.Handler
 }
 
@@ -49,6 +50,13 @@ func WithTimeout(timeout time.Duration) Option {
 func WithModel(model string) Option {
 	return func(o *clientOptions) {
 		o.model = model
+	}
+}
+
+// Sets the name for the Embedding Model being instantiated. Defaults to "mistral-embed".
+func WithEmbeddingModel(embeddingModel string) Option {
+	return func(o *clientOptions) {
+		o.embeddingModel = embeddingModel
 	}
 }
 
